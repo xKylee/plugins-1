@@ -399,8 +399,8 @@ public class BankPlugin extends Plugin implements KeyListener
 			return;
 		}
 
-		final Widget[] children = titleContainer.getDynamicChildren();
-		if (children == null || children.length < 2)
+		final Widget title = titleContainer.getChild(1);
+		if (title == null)
 		{
 			return;
 		}
@@ -413,7 +413,6 @@ public class BankPlugin extends Plugin implements KeyListener
 
 		final String titleText = createValueText(prices);
 
-		final Widget title = children[1];
 		title.setText(SEED_VAULT_TITLE + titleText);
 	}
 
@@ -478,8 +477,9 @@ public class BankPlugin extends Plugin implements KeyListener
 		}
 
 		final ItemDefinition itemComposition = itemManager.getItemDefinition(itemId);
-		long gePrice = (long) itemManager.getItemPrice(itemId) * (long) itemQuantities.count(itemId);
-		long haPrice = (long) (itemComposition.getPrice() * HIGH_ALCHEMY_MULTIPLIER) * (long) itemQuantities.count(itemId);
+		final int qty = itemQuantities.count(itemId);
+		final long gePrice = (long) itemManager.getItemPrice(itemId) * qty;
+		final long haPrice = (long) itemComposition.getHaPrice() * qty;
 
 		long value = Math.max(gePrice, haPrice);
 
@@ -589,9 +589,9 @@ public class BankPlugin extends Plugin implements KeyListener
 					alch += qty * 1000L;
 					break;
 				default:
-					final long storePrice = itemManager.getItemDefinition(id).getPrice();
-					final long alchPrice = (long) (storePrice * Constants.HIGH_ALCHEMY_MULTIPLIER);
-					alch += alchPrice * qty;
+					final int alchPrice = itemManager.getItemDefinition(id).getHaPrice();
+					alch += (long) alchPrice * qty;
+
 					ge += (long) itemManager.getItemPrice(id) * qty;
 					break;
 			}

@@ -72,6 +72,7 @@ import net.runelite.http.api.ws.messages.party.UserPart;
 import net.runelite.http.api.ws.messages.party.UserSync;
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
@@ -107,6 +108,9 @@ public class DiscordPlugin extends Plugin
 
 	@Inject
 	private WSClient wsClient;
+
+	@Inject
+	private OkHttpClient okHttpClient;
 
 	private final Map<Skill, Integer> skillExp = new HashMap<>();
 	private NavigationButton discordButton;
@@ -279,7 +283,7 @@ public class DiscordPlugin extends Plugin
 			.url(url)
 			.build();
 
-		RuneLiteAPI.CLIENT.newCall(request).enqueue(new Callback()
+		okHttpClient.newCall(request).enqueue(new Callback()
 		{
 			@Override
 			public void onFailure(@NotNull Call call, @NotNull IOException e)
